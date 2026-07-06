@@ -34,7 +34,5 @@ pub fn handle_player_movement(
         object_on_grid.internal_translation.x += direction.x * movable.speed;
         object_on_grid.internal_translation.y += direction.y * movable.speed;
         transform.translation = terrain::utils::pos_to_grid(object_on_grid.internal_translation);
-        println!("Player movement direction: {:?}", direction);
-        println!("Player moved to position: {:?}", transform.translation);
     }
 }

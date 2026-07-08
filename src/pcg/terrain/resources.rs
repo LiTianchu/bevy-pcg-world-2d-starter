@@ -1,6 +1,7 @@
-use crate::pcg::terrain::tile::Tile;
+use crate::pcg::terrain::{tile, tile::Tile};
 use bevy::prelude::*;
 use std::collections::HashSet;
+use std::fmt::{self, Write};
 
 #[derive(Resource)]
 pub struct Terrain {
@@ -78,5 +79,18 @@ impl Terrain {
             Tile::Grass => Ok(true),
             _ => Ok(false),
         }
+    }
+}
+
+impl fmt::Display for Terrain {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        for row in self.tiles.iter().rev() {
+            for &t in row {
+                f.write_char(tile::tile_appearance_ascii(t))?;
+            }
+            writeln!(f)?
+        }
+
+        Ok(())
     }
 }

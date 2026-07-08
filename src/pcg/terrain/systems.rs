@@ -17,3 +17,7 @@ pub fn draw_terrain(mut commands: Commands, terrain: Res<Terrain>) {
         ));
     }
 }
+
+pub fn print_terrain(_commands: Commands, terrain: Res<Terrain>) {
+    println!("{}", terrain.to_string());
+}

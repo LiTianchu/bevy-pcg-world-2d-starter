@@ -27,11 +27,11 @@ impl fmt::Display for Tile {
 pub fn get_tile_by_f64(val: f64) -> Tile {
     if val < -0.5 {
         Tile::Void
-    } else if val >= -0.5 && val < -0.7 {
+    } else if val >= -0.5 && val < -0.3 {
         Tile::Mountain
-    } else if val >= -0.7 && val < -0.9 {
+    } else if val >= -0.3 && val < -0.1 {
         Tile::Water
-    } else if val >= -0.9 && val < 0.0 {
+    } else if val >= -0.1 && val < 0.0 {
         Tile::Wall
     } else if val >= 0.0 && val < 0.25 {
         Tile::Grass
@@ -39,6 +39,7 @@ pub fn get_tile_by_f64(val: f64) -> Tile {
         Tile::Floor
     }
 }
+
 pub fn tile_appearance_ascii(tile: Tile) -> char {
     let tile_ascii: char = match tile {
         Tile::Wall => '#',

@@ -42,6 +42,7 @@ pub fn handle_player_movement(
 
         let move_interval: f32 = movable.move_interval();
 
+        // if last step time is reset or enough time has passed since the last step
         let move_not_in_cooldown = movable.last_step_time.map_or(true, |last_time| {
             time.elapsed_secs_f64() - last_time >= move_interval as f64
         });
@@ -61,9 +62,9 @@ pub fn handle_player_movement(
             .is_tile_walkable(next_cell_coord.x as usize, next_cell_coord.y as usize)
             .unwrap_or(false);
 
-        // if last step time is reset or enough time has passed since the last step, move the player
-        // by one tile in the dir of movement
+        // execute the move only if the move is not in cooldown and the next tile is walkable
         if move_not_in_cooldown && is_tile_walkable {
+            // update the step time to restart cooldown
             if next_grid_pos != transform.translation {
                 movable.last_step_time = Some(time.elapsed_secs_f64());
             }

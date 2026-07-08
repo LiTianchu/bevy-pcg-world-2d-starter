@@ -1,14 +1,18 @@
+use crate::pcg::terrain::utils;
 use crate::pcg::terrain::{constants, tile, tile::Tile};
 use bevy::prelude::*;
 use noise::{NoiseFn, Perlin};
-use rand::prelude::*;
+use rustc_hash::FxHasher;
 use std::collections::{HashMap, HashSet};
 use std::fmt::{self, Write};
+use std::hash::{Hash, Hasher};
 
 #[derive(Resource)]
 pub struct TerrainWorld {
     chunks: HashMap<IVec2, TerrainChunk>,
     chunk_dimension: UVec2,
+    seed: u32,
+    perlin: Perlin,
 }
 
 impl TerrainWorld {
@@ -19,7 +23,15 @@ impl TerrainWorld {
                 x: constants::DEFAULT_CHUNK_WIDTH,
                 y: constants::DEFAULT_CHUNK_HEIGHT,
             },
+            seed: constants::DEFAULT_TERRAIN_WORLD_SEED,
+            perlin: Perlin::new(constants::DEFAULT_TERRAIN_WORLD_SEED),
         }
+    }
+
+    pub fn with_seed(mut self, seed: u32) -> Self {
+        self.seed = seed;
+        self.perlin = Perlin::new(seed);
+        self
     }
 
     pub fn chunk_at(&self, coord: IVec2) -> Option<&TerrainChunk> {
@@ -47,36 +59,50 @@ impl TerrainWorld {
             return;
         }
 
-        let new_chunk: TerrainChunk = self.get_new_chunk();
+        // stable chunk seed based on coordinate
+        // ensures same chunk coordinate always generates the same terrain in WFC generation
+
+        let new_chunk: TerrainChunk = self.get_new_chunk(
+            coord,
+            self.chunk_dimension.x as usize,
+            self.chunk_dimension.y as usize,
+        );
+
         self.chunks.entry(coord).or_insert(new_chunk);
     }
 
-    fn get_new_chunk(&mut self) -> TerrainChunk {
-        let grid_width = self.chunk_dimension.x;
-        let grid_height = self.chunk_dimension.y;
-        let mut rng = rand::rng();
-        let seed: u32 = rng.random();
-        return self.get_new_chunk_seeded(seed, grid_width as usize, grid_height as usize);
+    fn compute_chunk_seed(&self, coord: IVec2) -> u32 {
+        let mut hasher = FxHasher::default();
+        (self.seed, coord.x, coord.y).hash(&mut hasher);
+        let seed_u64: u64 = hasher.finish();
+
+        // shorten chunk_seed to u32 using XOR fold for Perlin noise
+        (seed_u64 as u32) ^ ((seed_u64 >> 32) as u32)
     }
 
-    fn get_new_chunk_seeded(
+    fn get_new_chunk(
         &mut self,
-        seed: u32,
+        chunk_coord: IVec2,
         grid_width: usize,
         grid_height: usize,
     ) -> TerrainChunk {
-        let perlin = Perlin::new(seed);
+        let chunk_seed: u32 = self.compute_chunk_seed(chunk_coord);
         let mut terrain_tiles = vec![vec![Tile::Void; grid_width]; grid_height];
 
-        let scale = 0.1;
         for y in 0..grid_height {
             for x in 0..grid_width {
-                let value = perlin.get([x as f64 * scale, y as f64 * scale]);
+                let xy_global = utils::cell_to_pos_world(x, y, chunk_coord, self);
+                let value = self.perlin.get([
+                    xy_global.x as f64 * constants::PERLIN_NOISE_SCALE,
+                    xy_global.y as f64 * constants::PERLIN_NOISE_SCALE,
+                ]);
                 terrain_tiles[y][x] = tile::get_tile_by_f64(value);
             }
         }
 
-        return TerrainChunk::new().with_tiles(terrain_tiles);
+        return TerrainChunk::new()
+            .with_tiles(terrain_tiles)
+            .with_seed(chunk_seed);
     }
 }
 
@@ -84,17 +110,24 @@ impl TerrainWorld {
 #[derive(Resource)]
 pub struct TerrainChunk {
     tiles: Vec<Vec<Tile>>,
+    seed: u32,
 }
 
 impl TerrainChunk {
     pub fn new() -> Self {
         Self {
             tiles: vec![vec![]],
+            seed: 67,
         }
     }
 
     pub fn with_tiles(mut self, tiles: Vec<Vec<Tile>>) -> Self {
         self.tiles = tiles;
+        self
+    }
+
+    pub fn with_seed(mut self, seed: u32) -> Self {
+        self.seed = seed;
         self
     }
 

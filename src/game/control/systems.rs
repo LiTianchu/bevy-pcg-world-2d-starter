@@ -35,12 +35,12 @@ pub fn handle_player_movement(
             movable.last_step_time = None;
         }
 
-        let move_interval = 1.0 / movable.speed as f64;
+        let move_interval: f32 = movable.move_interval();
 
         // if last step time is reset or enough time has passed since the last step, move the player
         // by one tile in the dir of movement
         if movable.last_step_time.map_or(true, |last_time| {
-            time.elapsed_secs_f64() - last_time >= move_interval
+            time.elapsed_secs_f64() - last_time >= move_interval as f64
         }) {
             object_on_grid.internal_translation.x += direction.x * terrain::constants::TILE_SIZE;
             object_on_grid.internal_translation.y += direction.y * terrain::constants::TILE_SIZE;

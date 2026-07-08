@@ -35,4 +35,8 @@ impl Movable {
         self.speed = new_speed;
         self
     }
+
+    pub fn move_interval(&self) -> f32 {
+        1.0 / self.speed as f32
+    }
 }

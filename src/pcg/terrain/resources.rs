@@ -38,13 +38,40 @@ impl TerrainWorld {
         self.chunks.get(&coord)
     }
 
-    pub fn chunk_of_pos(&self, pos: Vec3) -> Option<&TerrainChunk> {
+    pub fn chunk_of_pos(&self, pos: Vec3) -> (IVec2, Option<&TerrainChunk>) {
         let chunk_x = (pos.x / constants::TILE_SIZE / self.chunk_dimension.x as f32).floor() as i32;
         let chunk_y = (pos.y / constants::TILE_SIZE / self.chunk_dimension.y as f32).floor() as i32;
-        self.chunk_at(IVec2 {
-            x: chunk_x,
-            y: chunk_y,
-        })
+        (
+            IVec2 {
+                x: chunk_x,
+                y: chunk_y,
+            },
+            self.chunk_at(IVec2 {
+                x: chunk_x,
+                y: chunk_y,
+            }),
+        )
+    }
+
+    // pub fn chunk_mod_cell(&self, pos: Vec3) -> UVec2 {
+    //     let chunk_x = (pos.x / constants::TILE_SIZE / self.chunk_dimension.x as f32).floor() as i32;
+    //     let chunk_y = (pos.y / constants::TILE_SIZE / self.chunk_dimension.y as f32).floor() as i32;
+    //     let chunk_mod_x = (pos.x / constants::TILE_SIZE).rem_euclid(self.chunk_dimension.x as f32);
+    //     let chunk_mod_y = (pos.y / constants::TILE_SIZE).rem_euclid(self.chunk_dimension.y as f32);
+    //     UVec2 {
+    //         x: chunk_mod_x.round() as u32,
+    //         y: chunk_mod_y.round() as u32,
+    //     }
+    // }
+
+    pub fn chunk_mod_pos(&self, pos: Vec3) -> Vec3 {
+        let chunk_mod_x = (pos.x).rem_euclid(self.chunk_dimension.x as f32 * constants::TILE_SIZE);
+        let chunk_mod_y = (pos.y).rem_euclid(self.chunk_dimension.y as f32 * constants::TILE_SIZE);
+        Vec3 {
+            x: chunk_mod_x as f32,
+            y: chunk_mod_y as f32,
+            z: pos.z,
+        }
     }
 
     pub fn chunk_dimension(&self) -> UVec2 {
@@ -78,6 +105,14 @@ impl TerrainWorld {
         );
 
         self.chunks.entry(coord).or_insert(new_chunk);
+    }
+
+    pub fn is_tile_walkable(&self, chunk_coord: IVec2, tile_coord: UVec2) -> Result<bool> {
+        let chunk: &TerrainChunk = self
+            .chunk_at(chunk_coord)
+            .ok_or("Chunk not generated yet")?;
+
+        chunk.is_tile_walkable(tile_coord.x as usize, tile_coord.y as usize)
     }
 
     fn compute_chunk_seed(&self, coord: IVec2) -> u32 {

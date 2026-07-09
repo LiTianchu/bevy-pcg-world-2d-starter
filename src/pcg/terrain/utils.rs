@@ -26,8 +26,11 @@ pub fn pos_to_cell_local(pos: Vec3) -> UVec2 {
     return UVec2 { x, y };
 }
 
-pub fn pos_to_cell_world(pos: Vec3, terrain: &TerrainWorld) -> UVec2 {
-    todo!()
+pub fn pos_to_cell_world(pos: Vec3, terrain: &TerrainWorld) -> (IVec2, UVec2) {
+    let (chunk_coord, chunk_option) = terrain.chunk_of_pos(pos);
+    chunk_option.map_or((IVec2::ZERO, UVec2::ZERO), |_chunk| {
+        (chunk_coord, pos_to_cell_local(terrain.chunk_mod_pos(pos)))
+    })
 }
 
 // round pos to cell

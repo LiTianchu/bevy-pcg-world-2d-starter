@@ -40,8 +40,8 @@ pub fn handle_player_movement(
             movable.last_step_time = None;
         }
 
-        let terrain_chunk: &terrain::resources::TerrainChunk =
-            terrain.chunk_of_pos(transform.translation).unwrap();
+        // let terrain_chunk: &terrain::resources::TerrainChunk =
+        //     terrain.chunk_of_pos(transform.translation).1.unwrap();
         let move_interval: f32 = movable.move_interval();
 
         // if last step time is reset or enough time has passed since the last step
@@ -58,10 +58,11 @@ pub fn handle_player_movement(
             } + object_on_grid.internal_translation,
         );
 
-        let next_cell_coord: UVec2 = terrain::utils::pos_to_cell_local(next_grid_pos);
+        let (chunk_coord, next_cell_coord) =
+            terrain::utils::pos_to_cell_world(next_grid_pos, &terrain);
 
-        let is_tile_walkable = terrain_chunk
-            .is_tile_walkable(next_cell_coord.x as usize, next_cell_coord.y as usize)
+        let is_tile_walkable = terrain
+            .is_tile_walkable(chunk_coord, next_cell_coord)
             .unwrap_or(false);
 
         // execute the move only if the move is not in cooldown and the next tile is walkable

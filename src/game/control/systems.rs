@@ -11,7 +11,7 @@ pub fn handle_player_movement(
     time: Res<Time>,
     keyboard_input: Res<ButtonInput<KeyCode>>,
     terrain: Res<terrain::resources::TerrainWorld>,
-    query: Query<(&mut Transform, &Player, &mut Movable, &mut ObjectOnGrid)>,
+    query: Query<(&mut Transform, &mut Movable, &mut ObjectOnGrid), With<Player>>,
 ) {
     let mut direction: Vec2 = Vec2::ZERO;
 
@@ -31,7 +31,7 @@ pub fn handle_player_movement(
         return;
     }
 
-    for (mut transform, _player, mut movable, mut object_on_grid) in query {
+    for (mut transform, mut movable, mut object_on_grid) in query {
         if keyboard_input.just_released(KeyCode::KeyW)
             || keyboard_input.just_released(KeyCode::KeyS)
             || keyboard_input.just_released(KeyCode::KeyA)

@@ -8,6 +8,7 @@ use crate::{
 };
 use bevy::prelude::*;
 use std::collections::HashSet;
+use std::io::{Write, stdout};
 
 pub fn spawn_player(mut commands: Commands, terrain: Res<terrain::resources::TerrainWorld>) {
     let player: Player = Player::new("Player");
@@ -46,7 +47,15 @@ pub fn spawn_player(mut commands: Commands, terrain: Res<terrain::resources::Ter
 
 pub fn render_ascii(
     terrain: Res<terrain::resources::TerrainWorld>,
-    player_query: Query<&Transform, (With<ObjectOnGrid>, With<Player>, With<Movable>)>,
+    player_query: Query<
+        &Transform,
+        (
+            With<ObjectOnGrid>,
+            With<Player>,
+            With<Movable>,
+            Changed<Transform>,
+        ),
+    >,
 ) {
     let default_transform: Transform = Transform::default();
     let player_transform: &Transform = player_query.single().unwrap_or(&default_transform);
@@ -76,6 +85,10 @@ pub fn render_ascii(
         }
         output.push(line);
     }
+
+    // clear screen + move cursor to top left
+    print!("\x1B[2J\x1B[1;1H");
+    stdout().flush().unwrap();
 
     // reverse the print as first row in the data is the bottom row in the render
     for line in output.iter().rev() {

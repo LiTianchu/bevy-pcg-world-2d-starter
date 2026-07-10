@@ -14,7 +14,15 @@ pub fn setup_camera(mut commands: Commands) {
 }
 
 pub fn camera_follow_player(
-    player_query: Query<&Transform, (With<ObjectOnGrid>, With<Player>, With<Movable>)>,
+    player_query: Query<
+        &Transform,
+        (
+            With<ObjectOnGrid>,
+            With<Player>,
+            With<Movable>,
+            Changed<Transform>,
+        ),
+    >,
     mut camera_query: Query<&mut Transform, (With<Camera2d>, Without<Player>)>,
 ) {
     if let Ok(player_transform) = player_query.single() {

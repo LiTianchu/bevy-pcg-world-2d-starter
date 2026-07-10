@@ -1,3 +1,4 @@
+pub mod ascii;
 pub mod camera;
 pub mod components;
 pub mod constants;

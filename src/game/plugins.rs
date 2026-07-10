@@ -19,7 +19,7 @@ impl Plugin for WorldPlugin {
                 (
                     game::control::systems::handle_player_movement,
                     game::camera::systems::camera_follow_player,
-                    game::systems::render_ascii,
+                    game::ascii::systems::render_ascii,
                 )
                     .chain(),
             );
@@ -30,7 +30,14 @@ pub struct AsciiWorldPlugin;
 impl Plugin for AsciiWorldPlugin {
     fn build(&self, app: &mut App) {
         app.insert_resource(terrain::utils::generate_terrain().with_seed(69))
-            .add_systems(Startup, (game::systems::spawn_player,).chain())
-            .add_systems(Update, (game::systems::render_ascii,).chain());
+            .add_systems(Startup, game::systems::spawn_player)
+            .add_systems(
+                Update,
+                (
+                    game::ascii::systems::render_ascii,
+                    game::ascii::systems::handle_terminal_player_movement,
+                )
+                    .chain(),
+            );
     }
 }

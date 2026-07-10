@@ -25,3 +25,12 @@ impl Plugin for WorldPlugin {
             );
     }
 }
+
+pub struct AsciiWorldPlugin;
+impl Plugin for AsciiWorldPlugin {
+    fn build(&self, app: &mut App) {
+        app.insert_resource(terrain::utils::generate_terrain().with_seed(69))
+            .add_systems(Startup, (game::systems::spawn_player,).chain())
+            .add_systems(Update, (game::systems::render_ascii,).chain());
+    }
+}

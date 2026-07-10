@@ -57,8 +57,10 @@ pub fn render_ascii(
         ),
     >,
 ) {
-    let default_transform: Transform = Transform::default();
-    let player_transform: &Transform = player_query.single().unwrap_or(&default_transform);
+    let Ok(player_transform) = player_query.single() else {
+        return;
+    };
+
     let (chunk_coord, local_tile_coord) =
         terrain::utils::pos_to_cell_world(player_transform.translation, &terrain);
 

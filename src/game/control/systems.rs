@@ -9,10 +9,14 @@ use bevy::prelude::*;
 
 pub fn handle_player_movement(
     time: Res<Time>,
-    keyboard_input: Res<ButtonInput<KeyCode>>,
+    keyboard_input: Option<Res<ButtonInput<KeyCode>>>,
     terrain: Res<terrain::resources::TerrainWorld>,
     query: Query<(&mut Transform, &mut Movable, &mut ObjectOnGrid), With<Player>>,
 ) {
+    let Some(keyboard_input) = keyboard_input else {
+        return;
+    };
+
     let mut direction: Vec2 = Vec2::ZERO;
 
     if keyboard_input.pressed(KeyCode::KeyW) {

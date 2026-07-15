@@ -22,8 +22,3 @@ pub fn draw_terrain(mut commands: Commands, terrain: Res<TerrainWorld>) {
         }
     }
 }
-
-// pub fn print_terrain(terrain: Res<TerrainWorld>) {
-//     println!("{}", terrain_chunk.to_string());
-// }
-//

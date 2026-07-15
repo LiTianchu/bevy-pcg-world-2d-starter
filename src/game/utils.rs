@@ -12,8 +12,6 @@ pub fn try_move(
     time: &Res<Time>,
     terrain: &Res<terrain::resources::TerrainWorld>,
 ) -> Option<Vec3> {
-    // let terrain_chunk: &terrain::resources::TerrainChunk =
-    //     terrain.chunk_of_pos(transform.translation).1.unwrap();
     let move_interval: f32 = movable.move_interval();
 
     // if last step time is reset or enough time has passed since the last step

@@ -19,11 +19,13 @@ impl fmt::Display for Tile {
             Tile::Mountain => write!(f, "Mountain"),
             Tile::Grass => write!(f, "Grass"),
             Tile::Floor => write!(f, "Floor"),
-            Tile::Void => write!(f, "V"),
+            Tile::Void => write!(f, "Void"),
         }
     }
 }
 
+// The main "get_tile" function called per each tile request during generation
+// Can be replaced with more complex logic for more interesting terrain
 pub fn get_tile_by_f64(val: f64) -> Tile {
     if val < -0.5 {
         Tile::Void

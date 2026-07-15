@@ -75,7 +75,6 @@ impl TerrainWorld {
         chunk.tile(chunk_mod.x as usize, chunk_mod.y as usize)
     }
 
-
     pub fn chunk_mod_pos(&self, pos: Vec3) -> Vec3 {
         let chunk_mod_x = (pos.x).rem_euclid(self.chunk_dimension.x as f32 * constants::TILE_SIZE);
         let chunk_mod_y = (pos.y).rem_euclid(self.chunk_dimension.y as f32 * constants::TILE_SIZE);
@@ -118,7 +117,6 @@ impl TerrainWorld {
 
         // stable chunk seed based on coordinate
         // ensures same chunk coordinate always generates the same terrain in WFC generation
-
         let new_chunk: TerrainChunk = self.get_new_chunk(
             coord,
             self.chunk_dimension.x as usize,

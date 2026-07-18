@@ -1,6 +1,11 @@
 # Bevy 2D Procedural Content Generation World
 
-This project demonstrates a minimal working 2D Procedural Content Generation World made using the Bevy game engine and Rust language for reference purposes and personal learning.
+This project demonstrates a minimal working 2D procedural world made using the Bevy game engine and Rust language that can be used as a kickstarter for anyone who likes to build 2D grid-based procedural generation games.
+
+## Tool
+- Engine: Bevy 0.19.0
+- Language: Rust 1.95.0
+- Package Manager: Cargo 1.95.0
 
 ## Running
 
@@ -27,4 +32,4 @@ cargo run -- --ascii
 ## Moving Around
 
 - `w/s/a/d` to move around the generated world
-- In Terminal Ascii mode, press `q` to quit
+- In Terminal ASCII mode, press `q` to quit

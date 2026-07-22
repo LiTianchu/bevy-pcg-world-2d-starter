@@ -44,7 +44,7 @@ cargo run -- --ascii
 cargo run -- --no-collision --seed 69 --ascii
 ```
 
-## Moving Around
+## Input Mapping
 
 - `w/s/a/d` to move around the generated world
 - In Terminal ASCII mode, press `q` to quit

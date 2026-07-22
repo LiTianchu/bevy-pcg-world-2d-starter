@@ -31,7 +31,7 @@ pub fn spawn_player(mut commands: Commands, terrain: Res<terrain::resources::Ter
         terrain::utils::cell_to_pos_local(spawn_place.x as usize, spawn_place.y as usize)
             .with_z(1.0);
 
-    let player_initial_speed: f32 = 100.0;
+    let player_initial_speed: f32 = constants::PLAYER_INITIAL_SPEED;
 
     commands.spawn((
         player,

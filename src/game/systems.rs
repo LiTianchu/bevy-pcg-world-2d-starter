@@ -9,7 +9,9 @@ use bevy::prelude::*;
 use std::collections::HashSet;
 
 pub fn spawn_player(mut commands: Commands, terrain: Res<terrain::resources::TerrainWorld>) {
-    let player: Player = Player::new("Player");
+    let player: Player = Player::new("Player")
+        .with_ascii_appearance('@')
+        .with_ascii_color(crossterm::style::Color::Red);
 
     let chunk: &terrain::resources::TerrainChunk = terrain.chunk_at(IVec2 { x: 0, y: 0 }).unwrap();
 

@@ -64,20 +64,15 @@ pub fn cleanup_terminal() -> Result<()> {
 pub fn render_ascii(
     terrain: Res<terrain::resources::TerrainWorld>,
     player_query: Query<
-        &Transform,
-        (
-            With<ObjectOnGrid>,
-            With<Player>,
-            With<Movable>,
-            Changed<Transform>,
-        ),
+        (&Player, &Transform),
+        (With<ObjectOnGrid>, With<Movable>, Changed<Transform>),
     >,
 ) -> Result<()> {
     let mut so = stdout();
 
     if let Ok(player_transform) = player_query.single() {
         let (chunk_coord, local_tile_coord) =
-            terrain::utils::pos_to_cell_world(player_transform.translation, &terrain);
+            terrain::utils::pos_to_cell_world(player_transform.1.translation, &terrain);
 
         let world_ivec2: IVec2 = terrain::utils::get_world_ivec2(chunk_coord, local_tile_coord);
 
@@ -125,6 +120,17 @@ pub fn render_ascii(
                 )))?;
             }
         }
+
+        let player_x = (world_ivec2.x - lower_left.x) as u16;
+        let player_y = (upper_right.y - world_ivec2.y) as u16;
+        so.queue(cursor::MoveTo(player_x, player_y))?;
+        so.queue(style::PrintStyledContent(
+            player_transform
+                .0
+                .ascii_appearance()
+                .with(player_transform.0.ascii_color()),
+        ))?;
+
         so.flush()?;
     };
     Ok(())

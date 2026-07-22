@@ -130,6 +130,15 @@ impl TerrainWorld {
         self.chunks.entry(coord).or_insert(new_chunk);
     }
 
+    pub fn free_chunk_at(&mut self, coord: IVec2) -> Result {
+        if self.chunks.contains_key(&coord) {
+            self.chunks.remove(&coord);
+            Ok(())
+        } else {
+            Err("Chunk not generated yet".into())
+        }
+    }
+
     pub fn is_tile_walkable(&self, chunk_coord: IVec2, tile_coord: UVec2) -> Result<bool> {
         let chunk: &TerrainChunk = self
             .chunk_at(chunk_coord)
@@ -173,7 +182,7 @@ impl TerrainWorld {
             }
         }
 
-        return IRect::new(min_x, max_x, min_y, max_y);
+        return IRect::new(min_x, min_y, max_x, max_y);
     }
 
     fn compute_chunk_seed(&self, coord: IVec2) -> u32 {

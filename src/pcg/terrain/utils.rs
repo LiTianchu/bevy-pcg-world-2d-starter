@@ -4,8 +4,8 @@ use crate::pcg::terrain::{
 };
 use bevy::prelude::*;
 
-pub fn generate_terrain() -> TerrainWorld {
-    let mut terrain_world: TerrainWorld = TerrainWorld::new();
+pub fn generate_terrain(seed: u32) -> TerrainWorld {
+    let mut terrain_world: TerrainWorld = TerrainWorld::new().with_seed(seed);
     terrain_world
         .generate_chunk_cluster_at(constants::INITIAL_CHUNK_COORD, DEFAULT_CHUNK_CLUSTER_EXTENT);
     terrain_world

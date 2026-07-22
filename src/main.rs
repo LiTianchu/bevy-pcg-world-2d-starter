@@ -7,6 +7,7 @@ use std::time::Duration;
 
 mod ascii;
 mod game;
+mod helper;
 mod pcg;
 
 fn main() {

@@ -3,13 +3,15 @@
 This project demonstrates a minimal working 2D procedural world made using the Bevy game engine and Rust language that can be used as a kickstarter for anyone who likes to build 2D grid-based procedural generation games.
 
 ## Tool
+
 - Engine: Bevy 0.19.0
 - Language: Rust 1.95.0
 - Package Manager: Cargo 1.95.0
 
 ## Running
 
-There are 2 ways to visualize the generated world:   
+There are 2 ways to visualize the generated world:
+
 1. Window  
 2. Terminal ASCII  
 
